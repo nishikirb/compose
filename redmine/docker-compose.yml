@@ -1,0 +1,40 @@
+version: '3.9'
+
+services:
+  redmine:
+    container_name: redmine
+    image: redmine
+    depends_on:
+      - redmine-db
+    restart: always
+    ports:
+      - 8080:3000
+    environment:
+      REDMINE_DB_MYSQL: redmine-db
+      REDMINE_DB_PASSWORD: example
+      REDMINE_SECRET_KEY_BASE: supersecretkey
+      REDMINE_DB_ENCODING: utf8mb4
+    volumes:
+      - ./volumes/configuration.yml:/usr/src/redmine/config/configuration.yml
+      - ./volumes/files:/usr/src/redmine/files
+      - ./volumes/plugins:/usr/src/redmine/plugins
+
+  redmine-db:
+    container_name: redmine-db
+    image: mysql:8.0
+    restart: always
+    command: --character-set-server=utf8mb4
+    ports:
+      - 3306:3306
+    environment:
+      MYSQL_ROOT_PASSWORD: example
+      MYSQL_DATABASE: redmine
+    volumes:
+      - ./volumes/db:/var/lib/mysql
+
+  redmine-mail:
+    container_name: redmine-mail
+    image: mailhog/mailhog:latest
+    platform: linux/amd64
+    ports:
+      - 8025:8025
