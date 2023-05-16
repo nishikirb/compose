@@ -1,0 +1,17 @@
+version: '3.9'
+
+services:
+  swagger-ui:
+    image: swaggerapi/swagger-ui
+    platform: linux/amd64
+    container_name: swagger-ui
+    ports:
+      - 9020:8080
+    volumes:
+      - ./docs:/usr/share/nginx/html/docs
+    environment:
+      URLS_PRIMARY_NAME: Petstore
+      URLS: >
+        [
+          {url: 'docs/petstore.yml', name: 'Petstore'}
+        ]
